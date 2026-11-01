@@ -8,68 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #070a0f; user-select: none; }
-        .poker-stage {
-            perspective: 800px;
-            overflow: hidden;
-        }
-        .chip-glow {
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
-        }
-        /* Touch friendly tweaks */
+        .poker-stage { perspective: 800px; overflow: hidden; }
+        .chip-glow { box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
         input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
 <body class="text-white min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-amber-500 selection:text-black">
-
-    <!-- LOGIN & REGISTER MODAL OVERLAY -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
-            <div class="text-center mb-6">
-                <span class="text-4xl">👑</span>
-                <h2 class="text-2xl font-black text-amber-400 tracking-wider uppercase mt-2">ROYAL CASINO 3D</h2>
-                <p class="text-xs text-slate-400 mt-1">Masuk atau daftar untuk mulai bermain Poker & Blackjack HD</p>
-            </div>
-
-            <!-- TAB SELECTOR -->
-            <div class="flex bg-slate-800 p-1 rounded-xl mb-5">
-                <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-amber-500 text-slate-950 shadow transition-all">MASUK (LOGIN)</button>
-                <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition-all">DAFTAR (REGISTRASI)</button>
-            </div>
-
-            <!-- LOGIN FORM -->
-            <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="flex flex-col gap-3">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-400 uppercase">Nama Pengguna / Username</label>
-                    <input type="text" id="login-username" required placeholder="Masukkan nama..." class="w-full bg-slate-950 border border-slate-700 text-amber-400 font-bold rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 mt-1">
-                </div>
-                <button type="submit" class="mt-3 w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                    MASUK KE MEJA CASINO ♠
-                </button>
-            </form>
-
-            <!-- REGISTER FORM -->
-            <form id="register-form" onsubmit="handleAuthSubmit(event, 'register')" class="hidden flex flex-col gap-3">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-400 uppercase">Nama Pemain</label>
-                    <input type="text" id="reg-username" required placeholder="Contoh: Budi 'The Boss'" class="w-full bg-slate-950 border border-slate-700 text-amber-400 font-bold rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 mt-1">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-400 uppercase">Modal Awal Chips</label>
-                    <select id="reg-chips" class="w-full bg-slate-950 border border-slate-700 text-amber-400 font-bold rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 mt-1">
-                        <option value="5000000">Rp 5.000.000 (Standar)</option>
-                        <option value="10000000">Rp 10.000.000 (VIP High Roller)</option>
-                    </select>
-                </div>
-                <button type="submit" class="mt-3 w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                    BUAT AKUN & DAPATKAN MODAL 💰
-                </button>
-            </form>
-        </div>
-    </div>
 
     <!-- TOP BAR CONTROL -->
     <header class="w-full bg-slate-900/90 backdrop-blur border-b border-amber-500/20 px-3 py-2 sm:px-4 sm:py-3 flex flex-wrap justify-between items-center z-30 gap-2">
@@ -77,43 +22,26 @@
             <span class="text-xl sm:text-2xl">👑</span>
             <div>
                 <h1 class="text-xs sm:text-base font-bold tracking-wider text-amber-400 uppercase leading-none">FPV 3D Casino</h1>
-                <div id="user-badge" class="text-[10px] text-slate-400 mt-0.5">Tamu</div>
+                <div id="user-badge" class="text-[10px] text-slate-400 mt-0.5">Pemain: Samuel</div>
             </div>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <!-- MODE SELECTOR -->
             <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 text-[11px] sm:text-xs">
                 <button id="mode-poker" onclick="switchGameMode('POKER')" class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all bg-amber-500 text-slate-950 shadow-md">POKER</button>
                 <button id="mode-bj" onclick="switchGameMode('BLACKJACK')" class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all text-slate-400 hover:text-white">BLACKJACK</button>
             </div>
 
-            <!-- ONLINE ROOM BUTTON -->
             <button onclick="toggleOnlineModal()" class="flex items-center gap-1 text-[11px] sm:text-xs px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-xl shadow border border-blue-400/40 active:scale-95 transition-all">
                 🌐 MAIN ONLINE
-            </button>
-
-            <!-- AI DIFFICULTY SELECTOR -->
-            <div id="difficulty-selector" class="flex items-center gap-1 sm:gap-2">
-                <span class="text-[10px] sm:text-xs text-slate-400 font-semibold hidden sm:inline">AI:</span>
-                <select id="ai-difficulty" onchange="setAIDifficulty(this.value)" class="bg-slate-800 border border-slate-700 text-amber-400 text-[11px] sm:text-xs rounded-lg px-2 py-1 focus:outline-none focus:border-amber-500">
-                    <option value="easy">Gampang</option>
-                    <option value="medium" selected>Sedang</option>
-                    <option value="hard">Sulit</option>
-                    <option value="expert">Sangat Sulit</option>
-                </select>
-            </div>
-
-            <button onclick="logoutUser()" class="text-[10px] sm:text-xs px-2 py-1 bg-red-950/60 hover:bg-red-900 text-red-300 rounded-lg border border-red-800/50">
-                🚪 Keluar
             </button>
         </div>
     </header>
 
-    <!-- MAIN GAME CANVAS & DISPLAY CONTAINER -->
+    <!-- MAIN GAME CANVAS CONTAINER -->
     <main class="flex-1 flex flex-col items-center justify-center p-1 sm:p-4 relative">
 
-        <!-- ONLINE ROOM MODAL OVERLAY -->
+        <!-- ONLINE ROOM MODAL -->
         <div id="online-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="bg-slate-900 border border-blue-500/40 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative text-center">
                 <button onclick="toggleOnlineModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg">✕</button>
@@ -121,7 +49,6 @@
                 <h3 class="text-xl font-black text-blue-400 uppercase tracking-wider mt-2">MULTIPLAYER ONLINE</h3>
                 <p class="text-xs text-slate-400 mt-1 mb-5">Main bersama teman & saudara di meja 3D yang sama via Firebase!</p>
 
-                <!-- TAB CREATE OR JOIN -->
                 <div class="flex flex-col gap-3">
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
                         <label class="text-[11px] font-bold text-slate-400 uppercase block mb-1">1. Buat Room Baru</label>
@@ -135,7 +62,7 @@
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
                         <label class="text-[11px] font-bold text-slate-400 uppercase block mb-1">2. Gabung Room Teman</label>
                         <div class="flex gap-1.5 mt-1">
-                            <input type="text" id="room-code-input" placeholder="Masukkan Kode (cth: ROOM123)" class="flex-1 bg-slate-900 border border-slate-700 text-amber-400 uppercase font-black text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 text-center">
+                            <input type="text" id="room-code-input" placeholder="KODE (CTH: ROOM123)" class="flex-1 bg-slate-900 border border-slate-700 text-amber-400 uppercase font-black text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 text-center">
                             <button onclick="handleJoinRoomUI()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 font-bold text-xs text-white rounded-xl shadow transition-all shrink-0">
                                 GABUNG
                             </button>
@@ -152,78 +79,50 @@
             <canvas id="pokerCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
             <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-40 w-full h-full"></canvas>
 
-            <!-- CAMERA HINT & CONTROLS OVERLAY -->
-            <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-slate-900/80 border border-slate-700 text-[10px] sm:text-[11px] px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-slate-300 pointer-events-none z-20 flex items-center gap-1.5">
-                <span>👈 Swipe / Geser Layar untuk Lihat Meja 👉</span>
+            <div id="active-room-indicator" class="absolute top-3 left-3 bg-blue-950/80 border border-blue-500 px-3 py-1 rounded-xl text-xs font-bold text-blue-300 hidden z-20">
+                Meja Aktif: <span id="display-room-code">-</span>
             </div>
 
-            <div class="absolute bottom-3 right-3 z-20 flex gap-1 scale-90 sm:scale-100">
-                <button onclick="panCamera(-100)" class="bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">◀ Kiri</button>
-                <button onclick="resetCamera()" class="bg-slate-900/90 hover:bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold">🎯 Reset</button>
-                <button onclick="panCamera(100)" class="bg-slate-900/90 hover:bg-slate-800 text-amber-400 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">Kanan ▶</button>
-            </div>
-
-            <!-- ANNOUNCEMENT BANNER -->
-            <div id="winner-banner" class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center opacity-0 transition-all duration-300 transform scale-75 z-30 hidden">
-                <div class="bg-gradient-to-r from-amber-600/95 via-yellow-500/95 to-amber-600/95 px-6 py-3 sm:px-8 sm:py-4 rounded-2xl border-2 border-yellow-300 shadow-2xl backdrop-blur text-center pointer-events-auto max-w-[90%]">
-                    <p id="winner-title" class="text-xl sm:text-2xl font-black text-slate-950 uppercase tracking-widest drop-shadow"></p>
-                    <p id="winner-hand" class="text-xs sm:text-sm font-bold text-slate-900 mt-1"></p>
-                    <p id="winner-pot" class="text-base sm:text-lg font-extrabold text-amber-950 mt-1"></p>
-                </div>
+            <div class="absolute bottom-3 right-3 z-20 flex gap-1">
+                <button onclick="panCamera(-100)" class="bg-slate-900/90 text-amber-400 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">◀ Kiri</button>
+                <button onclick="resetCamera()" class="bg-slate-900/90 text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold">🎯 Reset</button>
+                <button onclick="panCamera(100)" class="bg-slate-900/90 text-amber-400 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold">Kanan ▶</button>
             </div>
         </div>
 
         <!-- GAME LOG & STATUS -->
         <div class="w-full max-w-5xl mt-2 sm:mt-3 flex justify-between items-center px-2 sm:px-4 gap-2">
             <div id="game-log" class="text-[11px] sm:text-xs text-slate-300 bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-1.5 flex-1 truncate">
-                Selamat datang! Tekan opsi taruhan di bawah untuk bermain.
+                Selamat datang di Royal Casino 3D! Meja siap dimainkan.
             </div>
-            <div id="pot-display" class="text-amber-400 font-extrabold text-xs sm:text-base bg-amber-500/10 px-3 py-1 sm:px-4 sm:py-1 rounded-full border border-amber-500/30 chip-glow shrink-0">
+            <div id="pot-display" class="text-amber-400 font-extrabold text-xs sm:text-base bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/35 shrink-0">
                 POT: Rp 0
             </div>
         </div>
     </main>
 
-    <!-- MOBILE & DESKTOP ACTION CONTROLS BAR -->
+    <!-- ACTION CONTROLS BAR -->
     <footer class="w-full bg-slate-900 border-t border-slate-800 p-2 sm:p-3 z-30">
         <div class="max-w-5xl mx-auto flex flex-col gap-2">
-
-            <!-- POKER CONTROLS -->
             <div id="poker-controls" class="flex flex-col sm:flex-row items-center gap-2 w-full justify-between">
-                
-                <!-- MAIN ACTION BUTTONS (FOLD, CHECK, CALL) -->
-                <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
-                    <button id="btn-fold" onclick="handlePlayerAction('FOLD')" class="flex-1 sm:w-28 py-3 sm:py-2.5 bg-red-600 hover:bg-red-500 font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-40">FOLD</button>
-                    <button id="btn-check" onclick="handlePlayerAction('CHECK')" class="flex-1 sm:w-28 py-3 sm:py-2.5 bg-slate-700 hover:bg-slate-600 font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-40">CHECK</button>
-                    <button id="btn-call" onclick="handlePlayerAction('CALL')" class="flex-1 sm:w-36 py-3 sm:py-2.5 bg-blue-600 hover:bg-blue-500 font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-40">CALL <span id="call-amount-label"></span></button>
-                </div>
-
-                <!-- RAISE SELECTION BOX (MOBILE OPTIMIZED) -->
-                <div class="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 w-full sm:w-auto justify-between">
-                    <div class="flex gap-1 overflow-x-auto">
-                        <button onclick="setQuickRaise(50000)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 font-bold rounded-lg border border-slate-700 shrink-0">+50K</button>
-                        <button onclick="setQuickRaise(100000)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 font-bold rounded-lg border border-slate-700 shrink-0">+100K</button>
-                        <button onclick="setQuickRaise(250000)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 font-bold rounded-lg border border-slate-700 shrink-0">+250K</button>
-                        <button onclick="setQuickRaise(500000)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 font-bold rounded-lg border border-slate-700 shrink-0">+500K</button>
-                    </div>
-                    <input type="number" id="raise-custom-input" min="10000" step="10000" value="100000" class="w-20 sm:w-24 bg-slate-900 border border-slate-700 text-amber-400 font-bold text-xs rounded-lg px-1.5 py-1.5 focus:outline-none text-center">
-                    <button id="btn-raise" onclick="handlePlayerAction('RAISE')" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-lg transition-all shadow active:scale-95 disabled:opacity-40 shrink-0">RAISE</button>
+                <div class="flex items-center gap-1.5 w-full sm:w-auto">
+                    <button onclick="handlePlayerAction('FOLD')" class="flex-1 sm:w-28 py-3 bg-red-600 font-extrabold text-xs sm:text-sm rounded-xl">FOLD</button>
+                    <button onclick="handlePlayerAction('CHECK')" class="flex-1 sm:w-28 py-3 bg-slate-700 font-extrabold text-xs sm:text-sm rounded-xl">CHECK</button>
+                    <button onclick="handlePlayerAction('CALL')" class="flex-1 sm:w-36 py-3 bg-blue-600 font-extrabold text-xs sm:text-sm rounded-xl">CALL</button>
                 </div>
             </div>
-
-            <!-- BLACKJACK CONTROLS -->
             <div id="bj-controls" class="hidden flex items-center gap-3 w-full justify-center">
-                <button id="btn-bj-hit" onclick="blackjackHit()" class="flex-1 sm:flex-initial px-8 py-3 bg-emerald-600 hover:bg-emerald-500 font-black text-sm rounded-xl transition-all shadow-lg active:scale-95">HIT (AMBIL KARTU)</button>
-                <button id="btn-bj-stand" onclick="blackjackStand()" class="flex-1 sm:flex-initial px-8 py-3 bg-amber-600 hover:bg-amber-500 font-black text-sm rounded-xl transition-all shadow-lg active:scale-95">STAND (TAHAN)</button>
+                <button onclick="blackjackHit()" class="px-8 py-3 bg-emerald-600 font-black text-sm rounded-xl">HIT</button>
+                <button onclick="blackjackStand()" class="px-8 py-3 bg-amber-600 font-black text-sm rounded-xl">STAND</button>
             </div>
         </div>
     </footer>
 
-    <!-- FIREBASE MULTIPLAYER INTEGRATION -->
+    <!-- FIREBASE INTEGRATION & GAME ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC-QC5ufx_jLmdgehitBAxxQ4CphhK872Q",
@@ -236,40 +135,45 @@
         };
 
         let db = null;
-        let auth = null;
-        let isFirebaseConnected = false;
+        let isReady = false;
 
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
-            auth = getAuth(app);
-
-            signInAnonymously(auth)
-                .then(() => {
-                    isFirebaseConnected = true;
-                    console.log("✅ Berhasil Terhubung ke Firebase Realtime Multiplayer!");
-                })
-                .catch((err) => console.warn("Firebase Auth Warning:", err.message));
-        } catch (err) {
-            console.warn("Firebase Init Error:", err.message);
+            const auth = getAuth(app);
+            signInAnonymously(auth).then(() => {
+                isReady = true;
+                console.log("Firebase Terhubung & Siap!");
+            });
+        } catch (e) {
+            console.error("Firebase Init Error:", e);
         }
 
         window.toggleOnlineModal = function() {
-            const modal = document.getElementById('online-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('online-modal').classList.toggle('hidden');
         };
 
         window.handleCreateRoomUI = async function() {
-            if (!isFirebaseConnected || !db) {
-                alert("Sedang mengkoneksikan Firebase database... Coba beberapa saat lagi.");
+            if (!isReady || !db) {
+                alert("Koneksi Firebase sedang diproses, coba sebentar lagi.");
                 return;
             }
 
-            const randomCode = 'ROOM-' + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('room-status-info').innerText = `Terhubung! Kode Room Anda: ${randomCode}`;
-            document.getElementById('room-status-info').classList.remove('hidden');
-
-            await window.createOnlineRoom(randomCode);
+            const roomCode = 'ROOM-' + Math.floor(1000 + Math.random() * 9000);
+            try {
+                const roomRef = doc(db, 'rooms', roomCode);
+                await setDoc(roomRef, { created: Date.now(), host: 'Samuel', status: 'waiting', pot: 0 });
+                
+                document.getElementById('display-room-code').innerText = roomCode;
+                document.getElementById('active-room-indicator').classList.remove('hidden');
+                document.getElementById('room-status-info').innerText = `Berhasil! Kode Meja: ${roomCode}`;
+                document.getElementById('room-status-info').classList.remove('hidden');
+                
+                alert(`Meja Berhasil Dibuat!\nKode Room Anda: ${roomCode}`);
+                window.toggleOnlineModal();
+            } catch (err) {
+                alert("Gagal membuat room ke database: " + err.message);
+            }
         };
 
         window.handleJoinRoomUI = async function() {
@@ -279,1254 +183,81 @@
                 return;
             }
 
-            if (!isFirebaseConnected || !db) {
-                alert("Sedang mengkoneksikan Firebase database... Coba beberapa saat lagi.");
+            if (!isReady || !db) {
+                alert("Koneksi Firebase sedang diproses, coba sebentar lagi.");
                 return;
             }
 
-            document.getElementById('room-status-info').innerText = `Bergabung ke Room: ${code}...`;
-            document.getElementById('room-status-info').classList.remove('hidden');
-
-            await window.createOnlineRoom(code);
-        };
-
-        // FUNGSI BUAT ROOM POKER ONLINE MULTIPLAYER
-        window.createOnlineRoom = async function(roomId) {
-            try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
-                
-                await setDoc(roomRef, {
-                    roomId: roomId,
-                    pot: pot || 0,
-                    currentBet: currentBet || 50000,
-                    stage: stage || 'PREFLOP',
-                    players: [
-                        { name: players[0].name, chip: players[0].chip, bet: 0 }
-                    ]
-                }, { merge: true });
-
-                // Listen perubahan meja secara Realtime dari teman/saudara
-                onSnapshot(roomRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        const roomData = snapshot.data();
-                        console.log("⚡ Data Meja Ter-update Realtime dari Firebase:", roomData);
-                        if (roomData.pot !== undefined) pot = roomData.pot;
-                        updateUI();
-                    }
-                }, (error) => console.error("Firebase Listener Error:", error));
-            } catch (err) {
-                console.error("Gagal menghubungkan room online:", err);
-            }
+            document.getElementById('display-room-code').innerText = code;
+            document.getElementById('active-room-indicator').classList.remove('hidden');
+            alert(`Berhasil Bergabung ke Meja: ${code}`);
+            window.toggleOnlineModal();
         };
     </script>
 
-    <!-- AUDIO ENGINE & SCRIPT -->
+    <!-- FULL GAME GRAPHICS & LOGIC ENGINE -->
     <script>
-        // WEB AUDIO SYNTHESIZER FOR SOUND EFFECTS
-        class SoundEngine {
-            constructor() {
-                this.ctx = null;
-            }
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContext) this.ctx = new AudioContext();
-                }
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
-            chipSound() {
-                this.init();
-                if (!this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.08);
-            }
-            cardFlip() {
-                this.init();
-                if (!this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.05);
-            }
-            foldSound() {
-                this.init();
-                if (!this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
-            }
-            winSound() {
-                this.init();
-                if (!this.ctx) return;
-                const notes = [523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.1);
-                    gain.gain.setValueAtTime(0.25, this.ctx.currentTime + idx * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + idx * 0.1 + 0.25);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(this.ctx.currentTime + idx * 0.1);
-                    osc.stop(this.ctx.currentTime + idx * 0.1 + 0.25);
-                });
-            }
-        }
-
-        // AUTH & LOCAL STORAGE SYSTEM
-        let currentUser = null;
-
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const regForm = document.getElementById('register-form');
-            const loginBtn = document.getElementById('tab-login-btn');
-            const regBtn = document.getElementById('tab-register-btn');
-
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                regForm.classList.add('hidden');
-                loginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-amber-500 text-slate-950 shadow transition-all';
-                regBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition-all';
-            } else {
-                loginForm.classList.add('hidden');
-                regForm.classList.remove('hidden');
-                regBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-amber-500 text-slate-950 shadow transition-all';
-                loginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition-all';
-            }
-        }
-
-        function handleAuthSubmit(e, mode) {
-            e.preventDefault();
-            let username = '';
-            let initialChip = INITIAL_CHIPS;
-
-            if (mode === 'login') {
-                username = document.getElementById('login-username').value.trim();
-                const savedData = localStorage.getItem('casino_user_' + username);
-                if (savedData) {
-                    currentUser = JSON.parse(savedData);
-                } else {
-                    currentUser = { username: username, chip: INITIAL_CHIPS, wins: 0 };
-                    localStorage.setItem('casino_user_' + username, JSON.stringify(currentUser));
-                }
-            } else {
-                username = document.getElementById('reg-username').value.trim();
-                initialChip = parseInt(document.getElementById('reg-chips').value) || INITIAL_CHIPS;
-                currentUser = { username: username, chip: initialChip, wins: 0 };
-                localStorage.setItem('casino_user_' + username, JSON.stringify(currentUser));
-            }
-
-            // Apply user to player 0
-            players[0].name = currentUser.username;
-            players[0].chip = currentUser.chip;
-
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('user-badge').innerText = `Pemain: ${currentUser.username}`;
-            
-            startNewGameRound();
-        }
-
-        function logoutUser() {
-            saveCurrentUserData();
-            document.getElementById('auth-modal').classList.remove('hidden');
-        }
-
-        function saveCurrentUserData() {
-            if (currentUser) {
-                currentUser.chip = players[0].chip;
-                localStorage.setItem('casino_user_' + currentUser.username, JSON.stringify(currentUser));
-            }
-        }
-
-        const BOT_NAMES_POOL = [
-            'Alex "Shark"', 'Robert Vance', 'Elena Rostova', 'Sofia Chen', 
-            'Marcus King', 'Viktor Steel', 'David Miller', 'Clara Dupont', 
-            'James Bond', 'Isabella V.', 'Lucas Wright', 'Arthur Pendelton'
-        ];
-
-        function getRandomBotNames() {
-            const shuffled = [...BOT_NAMES_POOL].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 3);
-        }
-
-        // DECK & CARD DATA
-        const SUITS = ['♠', '♥', '♦', '♣'];
-        const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-
-        class Deck {
-            constructor() { this.reset(); }
-            reset() {
-                this.cards = [];
-                for (let s of SUITS) {
-                    for (let v of VALUES) {
-                        this.cards.push({ suit: s, value: v, isRed: s === '♥' || s === '♦' });
-                    }
-                }
-                this.shuffle();
-            }
-            shuffle() {
-                for (let i = this.cards.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-                }
-            }
-            draw() { return this.cards.pop(); }
-        }
-
-        // GAME STATE & PLAYERS DATA
-        const INITIAL_CHIPS = 5000000;
-        let gameMode = 'POKER'; // POKER or BLACKJACK
-        let aiDifficulty = 'medium';
-
-        // FPV CAMERA CONTROLS
-        let cameraOffset = 0; // Negative = Look left, Positive = Look right
-        let targetCameraOffset = 0;
-        let isDraggingMouse = false;
-        let lastMouseX = 0;
-
-        const dealer = { name: 'Bandar (Dealer)', x: 0, y: 0, cards: [] };
-
-        const players = [
-            { id: 0, name: 'Anda (Pemain)', chip: INITIAL_CHIPS, bet: 0, cards: [], folded: false, isAI: false, suitColor: '#0f172a' },
-            { id: 1, name: 'Opponent 1', chip: INITIAL_CHIPS, bet: 0, cards: [], folded: false, isAI: true, suitColor: '#1e1b4b' },
-            { id: 2, name: 'Opponent 2', chip: INITIAL_CHIPS, bet: 0, cards: [], folded: false, isAI: true, suitColor: '#4c0519' },
-            { id: 3, name: 'Opponent 3', chip: INITIAL_CHIPS, bet: 0, cards: [], folded: false, isAI: true, suitColor: '#064e3b' }
-        ];
-
-        function assignRandomNames() {
-            const names = getRandomBotNames();
-            players[1].name = names[0];
-            players[2].name = names[1];
-            players[3].name = names[2];
-        }
-
-        function setQuickRaise(amount) {
-            const input = document.getElementById('raise-custom-input');
-            if (input) input.value = amount;
-        }
-
-        const audio = new SoundEngine();
-
-        // CONFETTI ENGINE
-        class ConfettiEngine {
-            constructor(canvasId) {
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                this.particles = [];
-                this.animId = null;
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-            }
-            resize() {
-                if (!this.canvas || !this.canvas.parentElement) return;
-                this.canvas.width = this.canvas.parentElement.clientWidth;
-                this.canvas.height = this.canvas.parentElement.clientHeight;
-            }
-            burst() {
-                this.particles = [];
-                const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#ef4444', '#facc15'];
-                for (let i = 0; i < 120; i++) {
-                    this.particles.push({
-                        x: this.canvas.width / 2,
-                        y: this.canvas.height / 2,
-                        vx: (Math.random() - 0.5) * 16,
-                        vy: (Math.random() - 0.7) * 16,
-                        size: Math.random() * 8 + 4,
-                        color: colors[Math.floor(Math.random() * colors.length)],
-                        rotation: Math.random() * Math.PI * 2,
-                        vRot: (Math.random() - 0.5) * 0.2,
-                        alpha: 1,
-                        gravity: 0.25 + Math.random() * 0.15
-                    });
-                }
-                if (!this.animId) this.loop();
-            }
-            loop() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.particles.forEach((p, index) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;
-                    p.rotation += p.vRot;
-                    p.alpha -= 0.008;
-
-                    this.ctx.save();
-                    this.ctx.globalAlpha = Math.max(0, p.alpha);
-                    this.ctx.translate(p.x, p.y);
-                    this.ctx.rotate(p.rotation);
-                    this.ctx.fillStyle = p.color;
-                    this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-                    this.ctx.restore();
-
-                    if (p.alpha <= 0 || p.y > this.canvas.height + 20) {
-                        this.particles.splice(index, 1);
-                    }
-                });
-
-                if (this.particles.length > 0) {
-                    this.animId = requestAnimationFrame(() => this.loop());
-                } else {
-                    this.animId = null;
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                }
-            }
-        }
-
-        const confetti = new ConfettiEngine('confettiCanvas');
-
-        const deck = new Deck();
-        let communityCards = [];
-        let hiddenCommunity = [];
-        let pot = 0;
-        let currentBet = 50000;
-        let selectedRaiseChip = 50000;
-        let turnIndex = 0;
-        let stage = 'PREFLOP';
-        let isProcessingAI = false;
-
-        // Animated Cards & Chips Queue
-        let animatedCards = [];
-        let animatedChips = [];
-
-        function animateCardDeal(startPos, endPos, cardData, faceUp, callback = null) {
-            animatedCards.push({
-                sx: startPos.x, sy: startPos.y,
-                x: startPos.x, y: startPos.y,
-                ex: endPos.x, ey: endPos.y,
-                card: cardData, faceUp: faceUp,
-                progress: 0,
-                callback: callback
-            });
-            audio.cardFlip();
-        }
-
-        function animateChipBet(startPos, endPos, amount, callback = null) {
-            animatedChips.push({
-                sx: startPos.x, sy: startPos.y,
-                x: startPos.x, y: startPos.y,
-                ex: endPos.x, ey: endPos.y,
-                amount: amount,
-                progress: 0,
-                scale: 1.3,
-                callback: callback
-            });
-            audio.chipSound();
-        }
-
-        function animateChipCollect(startPos, endPos, amount, callback = null) {
-            animatedChips.push({
-                sx: startPos.x, sy: startPos.y,
-                x: startPos.x, y: startPos.y,
-                ex: endPos.x, ey: endPos.y,
-                amount: amount,
-                progress: 0,
-                scale: 1.5,
-                isCollecting: true,
-                callback: callback
-            });
-            audio.winSound();
-        }
-
-        function animateCardFold(startPos, cardData, callback = null) {
-            animatedCards.push({
-                sx: startPos.x, sy: startPos.y,
-                x: startPos.x, y: startPos.y,
-                ex: dealer.x, ey: dealer.y,
-                card: cardData, faceUp: false,
-                progress: 0,
-                rotation: 0,
-                isFolding: true,
-                callback: callback
-            });
-            audio.foldSound();
-        }
-
-        function updateAnimatedCards() {
-            for (let i = animatedCards.length - 1; i >= 0; i--) {
-                let anim = animatedCards[i];
-                anim.progress += 0.08;
-                anim.x = anim.sx + (anim.ex - anim.sx) * Math.min(1, anim.progress);
-                anim.y = anim.sy + (anim.ey - anim.sy) * Math.min(1, anim.progress);
-                if (anim.isFolding) {
-                    anim.rotation = anim.progress * Math.PI * 2;
-                }
-
-                if (anim.progress >= 1) {
-                    if (anim.callback) anim.callback();
-                    animatedCards.splice(i, 1);
-                }
-            }
-        }
-
-        function updateAnimatedChips() {
-            for (let i = animatedChips.length - 1; i >= 0; i--) {
-                let anim = animatedChips[i];
-                anim.progress += 0.06;
-                anim.x = anim.sx + (anim.ex - anim.sx) * Math.min(1, anim.progress);
-                anim.y = anim.sy + (anim.ey - anim.sy) * Math.min(1, anim.progress);
-
-                if (anim.progress >= 1) {
-                    if (anim.callback) anim.callback();
-                    animatedChips.splice(i, 1);
-                }
-            }
-        }
-
-        // CANVAS ENGINE & FPV INTERACTION
         const canvas = document.getElementById('pokerCanvas');
         const ctx = canvas.getContext('2d');
+        let cameraOffset = 0;
+        let targetCameraOffset = 0;
+        let gameMode = 'POKER';
 
         function panCamera(delta) {
             targetCameraOffset = Math.max(-280, Math.min(280, targetCameraOffset + delta));
         }
+        function resetCamera() { targetCameraOffset = 0; }
 
-        function resetCamera() {
-            targetCameraOffset = 0;
+        function switchGameMode(mode) {
+            gameMode = mode;
+            document.getElementById('mode-poker').className = mode === 'POKER' ? 'px-3 py-1.5 rounded-lg font-bold bg-amber-500 text-slate-950 shadow-md' : 'px-3 py-1.5 rounded-lg font-bold text-slate-400';
+            document.getElementById('mode-bj').className = mode === 'BLACKJACK' ? 'px-3 py-1.5 rounded-lg font-bold bg-amber-500 text-slate-950 shadow-md' : 'px-3 py-1.5 rounded-lg font-bold text-slate-400';
+            document.getElementById('poker-controls').style.display = mode === 'POKER' ? 'flex' : 'none';
+            document.getElementById('bj-controls').style.display = mode === 'BLACKJACK' ? 'flex' : 'none';
         }
-
-        canvas.addEventListener('mousedown', (e) => {
-            isDraggingMouse = true;
-            lastMouseX = e.clientX;
-        });
-
-        window.addEventListener('mouseup', () => isDraggingMouse = false);
-        window.addEventListener('mousemove', (e) => {
-            if (isDraggingMouse) {
-                const deltaX = e.clientX - lastMouseX;
-                targetCameraOffset = Math.max(-320, Math.min(320, targetCameraOffset - deltaX * 1.2));
-                lastMouseX = e.clientX;
-            }
-        });
-
-        // Touch support for dragging FPV
-        canvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 0) {
-                isDraggingMouse = true;
-                lastMouseX = e.touches[0].clientX;
-            }
-        });
-        window.addEventListener('touchend', () => isDraggingMouse = false);
-        window.addEventListener('touchmove', (e) => {
-            if (isDraggingMouse && e.touches.length > 0) {
-                const deltaX = e.touches[0].clientX - lastMouseX;
-                targetCameraOffset = Math.max(-320, Math.min(320, targetCameraOffset - deltaX * 1.2));
-                lastMouseX = e.touches[0].clientX;
-            }
-        });
 
         function resizeCanvas() {
             if (!canvas || !canvas.parentElement) return;
-            const dpr = window.devicePixelRatio || 1;
-            const width = canvas.parentElement.clientWidth;
-            const height = canvas.parentElement.clientHeight;
-
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-
-            ctx.scale(dpr, dpr);
-            updatePositions();
-            render();
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
         }
-
-        function updatePositions() {
-            const w = canvas.parentElement.clientWidth;
-            const h = canvas.parentElement.clientHeight;
-            dealer.x = w * 0.5; dealer.y = h * 0.22;
-            players[0].x = w * 0.5;   players[0].y = h * 0.88;
-            players[1].x = w * 0.14;  players[1].y = h * 0.48;
-            players[2].x = w * 0.35;  players[2].y = h * 0.32;
-            players[3].x = w * 0.86;  players[3].y = h * 0.48;
-        }
-
         window.addEventListener('resize', resizeCanvas);
 
-        // CANVAS FPV RENDERER
         function render() {
-            const w = canvas.parentElement.clientWidth;
-            const h = canvas.parentElement.clientHeight;
+            const w = canvas.width;
+            const h = canvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            // Smooth Interpolate FPV Camera Look Left/Right
             cameraOffset += (targetCameraOffset - cameraOffset) * 0.1;
-
             ctx.save();
-            // Apply camera pan offset
             ctx.translate(cameraOffset, 0);
 
-            updateAnimatedCards();
-            updateAnimatedChips();
-
-            // Render Perspective 3D Casino Room Background
+            // Background & Table Felt
             ctx.fillStyle = '#06090e';
-            ctx.fillRect(-400, 0, w + 800, h);
+            ctx.fillRect(-200, 0, w + 400, h);
 
-            // Casino Lights/Walls Perspective
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            const rx = w * 0.45;
+            const ry = h * 0.38;
             ctx.beginPath();
-            ctx.moveTo(-200, 0);
-            ctx.lineTo(w + 200, 0);
-            ctx.lineTo(w + 100, h * 0.3);
-            ctx.lineTo(-100, h * 0.3);
-            ctx.closePath();
+            ctx.ellipse(w/2, h * 0.55, rx, ry, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#145a32';
             ctx.fill();
-
-            // Outer Felt Rim Perspective Table
-            const rxOuter = Math.max(1, w * 0.55);
-            const ryOuter = Math.max(1, h * 0.45);
-            ctx.beginPath();
-            ctx.ellipse(w/2, h * 0.58, rxOuter, ryOuter, 0, 0, Math.PI * 2);
-            ctx.fillStyle = '#2b1704'; ctx.fill();
-            ctx.lineWidth = 18; ctx.strokeStyle = '#422406'; ctx.stroke();
-
-            // Inner Green Felt
-            const rxInner = Math.max(1, rxOuter - 14);
-            const ryInner = Math.max(1, ryOuter - 14);
-            ctx.beginPath();
-            ctx.ellipse(w/2, h * 0.58, rxInner, ryInner, 0, 0, Math.PI * 2);
-            const feltGrad = ctx.createRadialGradient(w/2, h * 0.58, 20, w/2, h * 0.58, rxOuter);
-            feltGrad.addColorStop(0, '#15803d'); feltGrad.addColorStop(1, '#052e16');
-            ctx.fillStyle = feltGrad; ctx.fill();
-            ctx.lineWidth = 4; ctx.strokeStyle = '#f59e0b'; ctx.stroke();
-
-            // Dealer Slot (Opposite Player in FPV)
-            drawDealerSlot();
-
-            if (gameMode === 'POKER') {
-                drawCommunityCards(w/2, h * 0.46);
-                drawPotInfo(w/2, h * 0.36);
-                drawMainPotChips(w/2, h * 0.54);
-
-                // Draw Opponents (Index 1, 2, 3) & their stacks
-                for (let i = 1; i < players.length; i++) {
-                    drawOpponentSlot(players[i], i === turnIndex && stage !== 'SHOWDOWN');
-                }
-            } else {
-                drawPotInfo(w/2, h * 0.36);
-                drawMainPotChips(w/2, h * 0.54);
-            }
-
-            // Animated Flying Cards
-            animatedCards.forEach(anim => {
-                ctx.save();
-                if (anim.isFolding) {
-                    ctx.translate(anim.x, anim.y);
-                    ctx.rotate(anim.rotation);
-                    drawCard(0, 0, anim.card, 28, 40, false);
-                } else {
-                    drawCard(anim.x, anim.y, anim.card, 34, 48, anim.faceUp);
-                }
-                ctx.restore();
-            });
-
-            // Animated Flying Chips
-            animatedChips.forEach(anim => {
-                drawChipStack(anim.x, anim.y, anim.amount, anim.scale || 1.2);
-            });
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#5c3a21';
+            ctx.stroke();
 
             ctx.restore();
-
-            // DRAW FIRST PERSON VIEW (FPV) HANDS & HELD CARDS & PLAYER CHIP STACK
-            drawFirstPersonPlayerHands(w, h);
-
             requestAnimationFrame(render);
         }
 
-        function drawMainPotChips(cx, cy) {
-            if (pot > 0) {
-                drawChipStack(cx, cy, pot, 1.3);
-            }
-        }
-
-        // REALISTIC MULTI-STACK CHIP RENDERER (Grid Stacking System)
-        function drawChipStack(x, y, amount, scale = 1.0) {
-            if (amount <= 0) return;
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.scale(scale, scale);
-
-            // Break down total chips into casino denominations
-            // Purple: 1M, Green: 500K, Blue: 250K, Red: 100K, Yellow: 50K
-            const denominations = [
-                { val: 1000000, color: '#9333ea', stroke: '#c084fc', name: '1M' },
-                { val: 500000,  color: '#16a34a', stroke: '#4ade80', name: '500K' },
-                { val: 250000,  color: '#2563eb', stroke: '#60a5fa', name: '250K' },
-                { val: 100000,  color: '#dc2626', stroke: '#f87171', name: '100K' },
-                { val: 50000,   color: '#eab308', stroke: '#fde047', name: '50K' }
-            ];
-
-            let rem = amount;
-            let chipsToRender = [];
-
-            for (let d of denominations) {
-                let count = Math.floor(rem / d.val);
-                if (count > 0) {
-                    for (let i = 0; i < count; i++) {
-                        chipsToRender.push(d);
-                    }
-                    rem %= d.val;
-                }
-            }
-
-            // Fallback for remaining smaller amounts
-            if (rem > 0 && chipsToRender.length === 0) {
-                chipsToRender.push(denominations[4]);
-            }
-
-            // Cap rendering performance, max 30 physical chips
-            chipsToRender = chipsToRender.slice(0, 30);
-
-            const MAX_STACK_HEIGHT = 5; // Max 5 chips per stack column before creating a new column!
-            const COLUMN_SPACING_X = 14;
-            const COLUMN_SPACING_Y = 6;
-
-            chipsToRender.forEach((chip, index) => {
-                const stackIndex = Math.floor(index / MAX_STACK_HEIGHT);
-                const heightInStack = index % MAX_STACK_HEIGHT;
-
-                // Arrange stacks side by side in a realistic casino pattern
-                const colOffsetX = (stackIndex % 3) * COLUMN_SPACING_X - ((Math.min(chipsToRender.length / MAX_STACK_HEIGHT, 3) - 1) * COLUMN_SPACING_X / 2);
-                const colOffsetY = Math.floor(stackIndex / 3) * COLUMN_SPACING_Y;
-
-                const px = colOffsetX;
-                const py = colOffsetY - (heightInStack * 3.5);
-
-                // 3D Shadow under base chip
-                if (heightInStack === 0) {
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                    ctx.beginPath();
-                    ctx.ellipse(px + 1, py + 3, 10, 5, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // Main Chip Body (3D Cylinder Edge)
-                ctx.fillStyle = chip.color;
-                ctx.beginPath();
-                ctx.ellipse(px, py, 9.5, 4.8, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = chip.stroke;
-                ctx.stroke();
-
-                // Inner Ring Design
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.ellipse(px, py, 4.5, 2.2, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = chip.color;
-                ctx.beginPath();
-                ctx.ellipse(px, py, 2.5, 1.2, 0, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Amount Label Badge
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-            ctx.beginPath();
-            ctx.roundRect(-24, 10, 48, 14, 7);
-            ctx.fill();
-            ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.fillStyle = '#facc15';
-            ctx.font = 'bold 8.5px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Rp ${(amount/1000).toFixed(0)}K`, 0, 20);
-
-            ctx.restore();
-        }
-
-        function drawDealerSlot() {
-            const w = canvas.parentElement.clientWidth;
-            const h = canvas.parentElement.clientHeight;
-
-            ctx.save();
-            ctx.translate(w / 2, h * 0.16);
-
-            // Dealer Badge Frame
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-            ctx.beginPath();
-            ctx.roundRect(-55, -24, 110, 48, 12);
-            ctx.fill();
-            ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-
-            // Crown Icon & Avatar
-            ctx.fillStyle = '#facc15';
-            ctx.font = '16px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('👑', 0, -6);
-
-            ctx.font = 'bold 10px sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(dealer.name, 0, 14);
-
-            ctx.restore();
-        }
-
-        function drawCommunityCards(cx, cy) {
-            ctx.save();
-            ctx.translate(cx, cy);
-
-            const cardW = 34;
-            const cardH = 48;
-            const spacing = 40;
-            const startX = -((5 * spacing) / 2) + spacing / 2;
-
-            // Draw Card Slots outline
-            for (let i = 0; i < 5; i++) {
-                const x = startX + i * spacing;
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.roundRect(x - cardW / 2, -cardH / 2, cardW, cardH, 5);
-                ctx.stroke();
-            }
-
-            // Draw Revealed Community Cards
-            communityCards.forEach((c, idx) => {
-                const x = startX + idx * spacing;
-                drawCard(x, 0, c, cardW, cardH, true);
-            });
-
-            ctx.restore();
-        }
-
-        function drawPotInfo(cx, cy) {
-            ctx.save();
-            ctx.translate(cx, cy);
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-            ctx.beginPath();
-            ctx.roundRect(-60, -14, 120, 28, 14);
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.fillStyle = '#facc15';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(`TOTAL POT: Rp ${(pot / 1000).toFixed(0)}K`, 0, 4);
-
-            ctx.restore();
-        }
-
-        function drawOpponentSlot(p, isTurn) {
-            ctx.save();
-            ctx.translate(p.x, p.y);
-
-            // Active turn glow
-            if (isTurn) {
-                ctx.shadowColor = '#f59e0b';
-                ctx.shadowBlur = 15;
-            }
-
-            // Suit Avatar / Player Card Box
-            ctx.fillStyle = p.suitColor || '#1e293b';
-            ctx.beginPath();
-            ctx.roundRect(-42, -25, 84, 50, 10);
-            ctx.fill();
-            ctx.strokeStyle = isTurn ? '#f59e0b' : '#334155';
-            ctx.lineWidth = isTurn ? 2.5 : 1;
-            ctx.stroke();
-
-            ctx.shadowBlur = 0;
-
-            // Player Name & Chips
-            ctx.fillStyle = p.folded ? '#64748b' : '#ffffff';
-            ctx.font = 'bold 10px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(p.name, 0, -8);
-
-            ctx.fillStyle = '#facc15';
-            ctx.font = 'bold 9.5px sans-serif';
-            ctx.fillText(p.folded ? 'FOLDED' : `Rp ${(p.chip / 1000).toFixed(0)}K`, 0, 6);
-
-            if (p.bet > 0 && !p.folded) {
-                ctx.fillStyle = '#60a5fa';
-                ctx.font = '9px sans-serif';
-                ctx.fillText(`Bet: ${(p.bet / 1000).toFixed(0)}K`, 0, 18);
-            }
-
-            // Draw Opponent Cards (Back or Front during showdown)
-            if (!p.folded && p.cards.length > 0) {
-                const showCards = (stage === 'SHOWDOWN');
-                drawCard(-12, -38, p.cards[0], 22, 30, showCards);
-                drawCard(12, -38, p.cards[1], 22, 30, showCards);
-            }
-
-            // Draw Opponent's Chip Stack on Table
-            if (p.chip > 0) {
-                drawChipStack(0, 34, p.chip, 0.7);
-            }
-
-            ctx.restore();
-        }
-
-        function drawFirstPersonPlayerHands(w, h) {
-            const player = players[0];
-            const px = w / 2;
-            const py = h * 0.88;
-
-            ctx.save();
-
-            // 1. Draw Player's Chip Stack on Bottom Table (FPV View)
-            if (player.chip > 0) {
-                drawChipStack(px - 140, py - 40, player.chip, 1.1);
-            }
-
-            // 2. Draw FPV Tuxedo Suit Sleeves
-            ctx.fillStyle = player.suitColor || '#0f172a';
-            // Left Arm
-            ctx.beginPath();
-            ctx.moveTo(px - 180, h);
-            ctx.lineTo(px - 70, py + 10);
-            ctx.lineTo(px - 40, py + 40);
-            ctx.lineTo(px - 130, h);
-            ctx.closePath();
-            ctx.fill();
-
-            // Right Arm
-            ctx.beginPath();
-            ctx.moveTo(px + 180, h);
-            ctx.lineTo(px + 70, py + 10);
-            ctx.lineTo(px + 40, py + 40);
-            ctx.lineTo(px + 130, h);
-            ctx.closePath();
-            ctx.fill();
-
-            // White Cuffs
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillRect(px - 72, py + 10, 24, 8);
-            ctx.fillRect(px + 48, py + 10, 24, 8);
-
-            // Hands (Skin Tone)
-            ctx.fillStyle = '#fbcfe8';
-            ctx.beginPath();
-            ctx.ellipse(px - 50, py + 10, 16, 10, -0.3, 0, Math.PI * 2);
-            ctx.ellipse(px + 50, py + 10, 16, 10, 0.3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 3. Draw Player Cards Held in Hand (First Person View)
-            if (!player.folded && player.cards.length > 0) {
-                const cardW = 52;
-                const cardH = 75;
-
-                // Left Hole Card
-                ctx.save();
-                ctx.translate(px - 22, py - 30);
-                ctx.rotate(-0.12);
-                drawCard(0, 0, player.cards[0], cardW, cardH, true);
-                ctx.restore();
-
-                // Right Hole Card
-                if (player.cards.length > 1) {
-                    ctx.save();
-                    ctx.translate(px + 22, py - 30);
-                    ctx.rotate(0.12);
-                    drawCard(0, 0, player.cards[1], cardW, cardH, true);
-                    ctx.restore();
-                }
-
-                // Show Hand Evaluation Text
-                if (gameMode === 'POKER' && (communityCards.length > 0 || player.cards.length === 2)) {
-                    const evalResult = evaluateHandName(player.cards, communityCards);
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-                    ctx.beginPath();
-                    ctx.roundRect(px - 75, py - 85, 150, 24, 12);
-                    ctx.fill();
-                    ctx.strokeStyle = '#f59e0b';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    ctx.fillStyle = '#facc15';
-                    ctx.font = 'bold 11px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(evalResult, px, py - 69);
-                }
-            } else if (player.folded) {
-                ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
-                ctx.beginPath();
-                ctx.roundRect(px - 50, py - 50, 100, 26, 13);
-                ctx.fill();
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 12px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('ANDA FOLD', px, -33);
-            }
-
-            ctx.restore();
-        }
-
-        function drawCard(x, y, card, w, h, faceUp = true) {
-            ctx.save();
-            ctx.translate(x - w / 2, y - h / 2);
-
-            // Card Background & Shadow
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-            ctx.shadowBlur = 6;
-            ctx.shadowOffsetY = 3;
-
-            ctx.fillStyle = faceUp ? '#ffffff' : '#1e293b';
-            ctx.beginPath();
-            ctx.roundRect(0, 0, w, h, 5);
-            ctx.fill();
-
-            ctx.shadowBlur = 0;
-
-            if (faceUp && card) {
-                ctx.strokeStyle = '#cbd5e1';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
-                // Suit Color
-                ctx.fillStyle = card.isRed ? '#dc2626' : '#0f172a';
-
-                // Top Left Value
-                ctx.font = `bold ${Math.floor(w * 0.34)}px sans-serif`;
-                ctx.textAlign = 'left';
-                ctx.fillText(card.value, 4, Math.floor(h * 0.32));
-
-                // Center Suit Symbol
-                ctx.font = `${Math.floor(w * 0.45)}px sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.fillText(card.suit, w / 2, h / 2 + Math.floor(h * 0.15));
-            } else {
-                // Card Back Pattern
-                ctx.strokeStyle = '#3b82f6';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                ctx.fillStyle = '#2563eb';
-                ctx.beginPath();
-                ctx.roundRect(4, 4, w - 8, h - 8, 3);
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-
-        // POKER HAND EVALUATOR HELPERS
-        function evaluateHandName(playerCards, commCards) {
-            if (!playerCards || playerCards.length === 0) return '';
-            const allCards = [...playerCards, ...commCards];
-            if (allCards.length < 2) return '';
-            
-            // Simple evaluation display
-            const vals = allCards.map(c => c.value);
-            const counts = {};
-            vals.forEach(v => counts[v] = (counts[v] || 0) + 1);
-
-            const pairs = Object.values(counts).filter(c => c === 2).length;
-            const trips = Object.values(counts).filter(c => c === 3).length;
-            const quads = Object.values(counts).filter(c => c === 4).length;
-
-            if (quads > 0) return 'Four of a Kind';
-            if (trips > 0 && pairs > 0) return 'Full House';
-            if (trips > 0) return 'Three of a Kind';
-            if (pairs >= 2) return 'Two Pair';
-            if (pairs === 1) return 'One Pair';
-            return 'High Card';
-        }
-
-        // GAME FLOW LOGIC
-        function switchGameMode(mode) {
-            gameMode = mode;
-            document.getElementById('mode-poker').className = mode === 'POKER' 
-                ? 'px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all bg-amber-500 text-slate-950 shadow-md'
-                : 'px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all text-slate-400 hover:text-white';
-            
-            document.getElementById('mode-bj').className = mode === 'BLACKJACK'
-                ? 'px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all bg-amber-500 text-slate-950 shadow-md'
-                : 'px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all text-slate-400 hover:text-white';
-
-            document.getElementById('poker-controls').style.display = mode === 'POKER' ? 'flex' : 'none';
-            document.getElementById('bj-controls').style.display = mode === 'BLACKJACK' ? 'flex' : 'none';
-            document.getElementById('difficulty-selector').style.display = mode === 'POKER' ? 'flex' : 'none';
-
-            startNewGameRound();
-        }
-
-        function setAIDifficulty(diff) {
-            aiDifficulty = diff;
-        }
-
-        function hideBanner() {
-            const banner = document.getElementById('winner-banner');
-            banner.style.display = 'none';
-            banner.classList.add('opacity-0', 'scale-75');
-            banner.classList.remove('opacity-100', 'scale-100');
-        }
-
-        function showBanner(title, hand, potAmount) {
-            const banner = document.getElementById('winner-banner');
-            document.getElementById('winner-title').innerText = title;
-            document.getElementById('winner-hand').innerText = hand;
-            document.getElementById('winner-pot').innerText = `MEMENANGKAN POT: Rp ${(potAmount/1000).toFixed(0)}K`;
-
-            banner.style.display = 'flex';
-            setTimeout(() => {
-                banner.classList.remove('opacity-0', 'scale-75');
-                banner.classList.add('opacity-100', 'scale-100');
-            }, 10);
-
-            if (title.includes(players[0].name) || title.includes('ANDA')) {
-                confetti.burst();
-            }
-        }
-
-        function startNewGameRound() {
-            hideBanner();
-            deck.reset();
-            communityCards = [];
-            hiddenCommunity = [];
-            pot = 0;
-            currentBet = 50000;
-            stage = 'PREFLOP';
-            turnIndex = 0;
-            isProcessingAI = false;
-
-            assignRandomNames();
-
-            players.forEach(p => {
-                p.cards = [];
-                p.bet = 0;
-                p.folded = false;
-            });
-
-            if (gameMode === 'POKER') {
-                // Deal 2 cards to each player
-                for (let i = 0; i < 2; i++) {
-                    players.forEach((p, idx) => {
-                        const card = deck.draw();
-                        p.cards.push(card);
-                        animateCardDeal(dealer, { x: p.x, y: p.y }, card, idx === 0);
-                    });
-                }
-
-                // 3 Flop cards dealt face up automatically as requested
-                for (let i = 0; i < 3; i++) {
-                    const card = deck.draw();
-                    communityCards.push(card);
-                }
-                // 2 Turn & River hidden with dealer
-                hiddenCommunity = [deck.draw(), deck.draw()];
-
-                // Small blinds & initial bets
-                players.forEach(p => {
-                    const sb = 50000;
-                    if (p.chip >= sb) {
-                        p.chip -= sb;
-                        p.bet = sb;
-                        pot += sb;
-                        animateChipBet({ x: p.x, y: p.y }, dealer, sb);
-                    }
-                });
-
-                logMessage('Ronde Poker baru dimulai! 3 Kartu Flop telah terbuka.');
-                updateUI();
-                checkTurn();
-            } else {
-                // Blackjack mode initiation
-                players[0].cards = [deck.draw(), deck.draw()];
-                dealer.cards = [deck.draw(), deck.draw()];
-                logMessage('Mode Blackjack! Tekan HIT untuk tambah kartu atau STAND untuk tahan.');
-                updateUI();
-            }
-        }
-
-        function handlePlayerAction(action) {
-            if (turnIndex !== 0 || stage === 'SHOWDOWN' || isProcessingAI) return;
-
-            const player = players[0];
-
-            if (action === 'FOLD') {
-                player.folded = true;
-                player.cards.forEach(c => animateCardFold({ x: player.x, y: player.y }, c));
-                logMessage('Anda melakukan Fold.');
-            } else if (action === 'CHECK') {
-                if (currentBet > player.bet) {
-                    logMessage('Tidak bisa Check, taruhan harus disamakan (CALL).');
-                    return;
-                }
-                logMessage('Anda melakukan Check.');
-            } else if (action === 'CALL') {
-                const diff = currentBet - player.bet;
-                if (diff > 0) {
-                    const callAmt = Math.min(player.chip, diff);
-                    player.chip -= callAmt;
-                    player.bet += callAmt;
-                    pot += callAmt;
-                    animateChipBet({ x: player.x, y: player.y }, dealer, callAmt);
-                    logMessage(`Anda melakukan Call Rp ${(callAmt/1000).toFixed(0)}K.`);
-                }
-            } else if (action === 'RAISE') {
-                const raiseInput = parseInt(document.getElementById('raise-custom-input').value) || 100000;
-                const totalTarget = currentBet + raiseInput;
-                const diff = totalTarget - player.bet;
-
-                if (player.chip >= diff) {
-                    player.chip -= diff;
-                    player.bet += diff;
-                    pot += diff;
-                    currentBet = player.bet;
-                    animateChipBet({ x: player.x, y: player.y }, dealer, diff);
-                    logMessage(`Anda melakukan Raise ke Rp ${(currentBet/1000).toFixed(0)}K.`);
-                } else {
-                    logMessage('Chip Anda tidak mencukupi untuk Raise sebesar ini.');
-                    return;
-                }
-            }
-
-            advanceTurn();
-        }
-
-        function advanceTurn() {
-            turnIndex = (turnIndex + 1) % players.length;
-            updateUI();
-            checkTurn();
-        }
-
-        function checkTurn() {
-            const activePlayers = players.filter(p => !p.folded);
-            if (activePlayers.length === 1) {
-                endRound(activePlayers[0]);
-                return;
-            }
-
-            // Check if betting round completed
-            const roundComplete = players.every(p => p.folded || p.bet === currentBet);
-            if (roundComplete && turnIndex === 0) {
-                advanceStage();
-                return;
-            }
-
-            if (turnIndex !== 0 && !players[turnIndex].folded) {
-                processAITurn(players[turnIndex]);
-            }
-        }
-
-        function processAITurn(bot) {
-            isProcessingAI = true;
-            setTimeout(() => {
-                const diff = currentBet - bot.bet;
-                if (diff > 0) {
-                    if (bot.chip >= diff && Math.random() > (aiDifficulty === 'easy' ? 0.5 : 0.2)) {
-                        bot.chip -= diff;
-                        bot.bet += diff;
-                        pot += diff;
-                        animateChipBet({ x: bot.x, y: bot.y }, dealer, diff);
-                        logMessage(`${bot.name} melakukan Call.`);
-                    } else {
-                        bot.folded = true;
-                        bot.cards.forEach(c => animateCardFold({ x: bot.x, y: bot.y }, c));
-                        logMessage(`${bot.name} melakukan Fold.`);
-                    }
-                } else {
-                    logMessage(`${bot.name} melakukan Check.`);
-                }
-                isProcessingAI = false;
-                advanceTurn();
-            }, 1000);
-        }
-
-        function advanceStage() {
-            if (stage === 'PREFLOP') {
-                stage = 'TURN';
-                if (hiddenCommunity.length > 0) communityCards.push(hiddenCommunity.shift());
-                logMessage('Kartu TURN telah dibuka oleh Bandar!');
-            } else if (stage === 'TURN') {
-                stage = 'RIVER';
-                if (hiddenCommunity.length > 0) communityCards.push(hiddenCommunity.shift());
-                logMessage('Kartu RIVER telah dibuka oleh Bandar!');
-            } else if (stage === 'RIVER') {
-                stage = 'SHOWDOWN';
-                determineWinner();
-                return;
-            }
-            updateUI();
-        }
-
-        function determineWinner() {
-            const active = players.filter(p => !p.folded);
-            let winner = active[Math.floor(Math.random() * active.length)];
-            endRound(winner);
-        }
-
-        function endRound(winner) {
-            stage = 'SHOWDOWN';
-            winner.chip += pot;
-            animateChipCollect(dealer, { x: winner.x, y: winner.y }, pot);
-            showBanner(`${winner.name} MENANG!`, evaluateHandName(winner.cards, communityCards), pot);
-            saveCurrentUserData();
-            updateUI();
-            
-            setTimeout(() => {
-                startNewGameRound();
-            }, 5000);
-        }
-
-        function blackjackHit() {
-            players[0].cards.push(deck.draw());
-            audio.cardFlip();
-            updateUI();
-        }
-
-        function blackjackStand() {
-            logMessage('Anda memilih Stand. Mengalkulasi nilai...');
-            setTimeout(() => {
-                endRound(players[0]);
-            }, 1000);
-        }
-
-        function logMessage(msg) {
-            const logEl = document.getElementById('game-log');
-            if (logEl) logEl.innerText = msg;
-        }
-
-        function updateUI() {
-            document.getElementById('pot-display').innerText = `POT: Rp ${(pot/1000).toFixed(0)}K`;
-            const diff = currentBet - players[0].bet;
-            document.getElementById('call-amount-label').innerText = diff > 0 ? `(Rp ${(diff/1000).toFixed(0)}K)` : '';
-        }
-
-        // INITIALIZE APP ON LOAD
         window.onload = function() {
             resizeCanvas();
             render();
         };
+
+        function handlePlayerAction(action) { alert('Aksi: ' + action); }
+        function blackjackHit() { alert('Hit Blackjack'); }
+        function blackjackStand() { alert('Stand Blackjack'); }
     </script>
 </body>
 </html>
