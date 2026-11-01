@@ -88,6 +88,11 @@
                 <button id="mode-bj" onclick="switchGameMode('BLACKJACK')" class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg font-bold transition-all text-slate-400 hover:text-white">BLACKJACK</button>
             </div>
 
+            <!-- ONLINE ROOM BUTTON -->
+            <button onclick="toggleOnlineModal()" class="flex items-center gap-1 text-[11px] sm:text-xs px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold rounded-xl shadow border border-blue-400/40 active:scale-95 transition-all">
+                🌐 MAIN ONLINE
+            </button>
+
             <!-- AI DIFFICULTY SELECTOR -->
             <div id="difficulty-selector" class="flex items-center gap-1 sm:gap-2">
                 <span class="text-[10px] sm:text-xs text-slate-400 font-semibold hidden sm:inline">AI:</span>
@@ -107,6 +112,40 @@
 
     <!-- MAIN GAME CANVAS & DISPLAY CONTAINER -->
     <main class="flex-1 flex flex-col items-center justify-center p-1 sm:p-4 relative">
+
+        <!-- ONLINE ROOM MODAL OVERLAY -->
+        <div id="online-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-blue-500/40 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative text-center">
+                <button onclick="toggleOnlineModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg">✕</button>
+                <span class="text-4xl">🌐</span>
+                <h3 class="text-xl font-black text-blue-400 uppercase tracking-wider mt-2">MULTIPLAYER ONLINE</h3>
+                <p class="text-xs text-slate-400 mt-1 mb-5">Main bersama teman & saudara di meja 3D yang sama via Firebase!</p>
+
+                <!-- TAB CREATE OR JOIN -->
+                <div class="flex flex-col gap-3">
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase block mb-1">1. Buat Room Baru</label>
+                        <button onclick="handleCreateRoomUI()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white rounded-xl shadow transition-all">
+                            ✨ BUAT MEJA ONLINE
+                        </button>
+                    </div>
+
+                    <div class="text-xs text-slate-500 font-bold uppercase my-1">- ATAU -</div>
+
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase block mb-1">2. Gabung Room Teman</label>
+                        <div class="flex gap-1.5 mt-1">
+                            <input type="text" id="room-code-input" placeholder="Masukkan Kode (cth: ROOM123)" class="flex-1 bg-slate-900 border border-slate-700 text-amber-400 uppercase font-black text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 text-center">
+                            <button onclick="handleJoinRoomUI()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 font-bold text-xs text-white rounded-xl shadow transition-all shrink-0">
+                                GABUNG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="room-status-info" class="mt-4 text-xs font-semibold text-amber-400 hidden"></div>
+            </div>
+        </div>
 
         <!-- STAGE 3D CANVAS -->
         <div class="poker-stage w-full max-w-5xl h-[380px] sm:h-[500px] flex items-center justify-center relative rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-950">
@@ -186,9 +225,6 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // =========================================================================
-        // KONFIGURASI FIREBASE RESMI PROYEK ROYAL-CASINO-3D
-        // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyC-QC5ufx_jLmdgehitBAxxQ4CphhK872Q",
             authDomain: "royal-casino-3d.firebaseapp.com",
@@ -203,58 +239,84 @@
         let auth = null;
         let isFirebaseConnected = false;
 
-        // Validasi Kunci Firebase secara Otomatis
-        if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "MASUKKAN_API_KEY_ANDA_DI_SINI") {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
 
-                signInAnonymously(auth)
-                    .then(() => {
-                        isFirebaseConnected = true;
-                        console.log("✅ Berhasil Terhubung ke Firebase Realtime Multiplayer Proyek royal-casino-3d!");
-                    })
-                    .catch((err) => {
-                        console.warn("⚠️ Firebase Auth Warning (Berjalan di Mode Offline):", err.message);
-                    });
-            } catch (err) {
-                console.warn("⚠️ Gagal Inisialisasi Firebase (Berjalan di Mode Offline):", err.message);
-            }
+            signInAnonymously(auth)
+                .then(() => {
+                    isFirebaseConnected = true;
+                    console.log("✅ Berhasil Terhubung ke Firebase Realtime Multiplayer!");
+                })
+                .catch((err) => console.warn("Firebase Auth Warning:", err.message));
+        } catch (err) {
+            console.warn("Firebase Init Error:", err.message);
         }
 
-        // FUNGSI BUAT ROOM POKER ONLINE MULTIPLAYER
-        window.createOnlineRoom = async function(roomId) {
+        window.toggleOnlineModal = function() {
+            const modal = document.getElementById('online-modal');
+            modal.classList.toggle('hidden');
+        };
+
+        window.handleCreateRoomUI = async function() {
             if (!isFirebaseConnected || !db) {
-                alert("Fitur Online Multiplayer sedang mempersiapkan koneksi database...");
+                alert("Sedang mengkoneksikan Firebase database... Coba beberapa saat lagi.");
                 return;
             }
 
+            const randomCode = 'ROOM-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('room-status-info').innerText = `Terhubung! Kode Room Anda: ${randomCode}`;
+            document.getElementById('room-status-info').classList.remove('hidden');
+
+            await window.createOnlineRoom(randomCode);
+        };
+
+        window.handleJoinRoomUI = async function() {
+            const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+            if (!code) {
+                alert("Masukkan Kode Room terlebih dahulu!");
+                return;
+            }
+
+            if (!isFirebaseConnected || !db) {
+                alert("Sedang mengkoneksikan Firebase database... Coba beberapa saat lagi.");
+                return;
+            }
+
+            document.getElementById('room-status-info').innerText = `Bergabung ke Room: ${code}...`;
+            document.getElementById('room-status-info').classList.remove('hidden');
+
+            await window.createOnlineRoom(code);
+        };
+
+        // FUNGSI BUAT ROOM POKER ONLINE MULTIPLAYER
+        window.createOnlineRoom = async function(roomId) {
             try {
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
                 
                 await setDoc(roomRef, {
                     roomId: roomId,
-                    pot: 0,
-                    currentBet: 50000,
-                    stage: 'PREFLOP',
+                    pot: pot || 0,
+                    currentBet: currentBet || 50000,
+                    stage: stage || 'PREFLOP',
                     players: [
                         { name: players[0].name, chip: players[0].chip, bet: 0 }
                     ]
-                });
+                }, { merge: true });
 
-                // Listen perubahan meja secara Realtime
+                // Listen perubahan meja secara Realtime dari teman/saudara
                 onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const roomData = snapshot.data();
                         console.log("⚡ Data Meja Ter-update Realtime dari Firebase:", roomData);
-                        pot = roomData.pot;
+                        if (roomData.pot !== undefined) pot = roomData.pot;
                         updateUI();
                     }
-                }, (error) => console.error("Firebase Error Listener:", error));
+                }, (error) => console.error("Firebase Listener Error:", error));
             } catch (err) {
-                console.error("Gagal membuat room online:", err);
+                console.error("Gagal menghubungkan room online:", err);
             }
         };
     </script>
