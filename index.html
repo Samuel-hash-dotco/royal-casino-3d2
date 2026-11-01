@@ -186,22 +186,25 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 1. SALIN CONFIG DARI FIREBASE CONSOLE ANDA KE SINI:
+        // =========================================================================
+        // KONFIGURASI FIREBASE RESMI PROYEK ROYAL-CASINO-3D
+        // =========================================================================
         const firebaseConfig = {
-            apiKey: "AIzaSy...", // Ganti dengan API Key Firebase Anda dari Console
+            apiKey: "AIzaSyC-QC5ufx_jLmdgehitBAxxQ4CphhK872Q",
             authDomain: "royal-casino-3d.firebaseapp.com",
             projectId: "royal-casino-3d",
-            storageBucket: "royal-casino-3d.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123def456"
+            storageBucket: "royal-casino-3d.firebasestorage.app",
+            messagingSenderId: "848524822068",
+            appId: "1:848524822068:web:7c0b09f7dd42ba44adac61",
+            measurementId: "G-5ER4EZNF5Y"
         };
 
         let db = null;
         let auth = null;
         let isFirebaseConnected = false;
 
-        // Cek apakah API Key Firebase valid (bukan placeholder)
-        if (firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("AIzaSy...")) {
+        // Validasi Kunci Firebase secara Otomatis
+        if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "MASUKKAN_API_KEY_ANDA_DI_SINI") {
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
@@ -210,22 +213,20 @@
                 signInAnonymously(auth)
                     .then(() => {
                         isFirebaseConnected = true;
-                        console.log("✅ Terhubung ke Firebase Multiplayer!");
+                        console.log("✅ Berhasil Terhubung ke Firebase Realtime Multiplayer Proyek royal-casino-3d!");
                     })
                     .catch((err) => {
-                        console.warn("⚠️ Firebase Auth Error (Mode Offline aktif):", err.message);
+                        console.warn("⚠️ Firebase Auth Warning (Berjalan di Mode Offline):", err.message);
                     });
             } catch (err) {
-                console.warn("⚠️ Gagal inisialisasi Firebase (Mode Offline aktif):", err.message);
+                console.warn("⚠️ Gagal Inisialisasi Firebase (Berjalan di Mode Offline):", err.message);
             }
-        } else {
-            console.info("ℹ️ Firebase SDK belum dikonfigurasi dengan API Key asli. Game berjalan dalam mode Lokal / Singleplayer.");
         }
 
-        // 2. FUNGSI BUAT ROOM POKER ONLINE
+        // FUNGSI BUAT ROOM POKER ONLINE MULTIPLAYER
         window.createOnlineRoom = async function(roomId) {
             if (!isFirebaseConnected || !db) {
-                alert("Fitur Online Multiplayer memerlukan konfigurasi firebaseConfig yang valid di index.html");
+                alert("Fitur Online Multiplayer sedang mempersiapkan koneksi database...");
                 return;
             }
 
@@ -247,13 +248,13 @@
                 onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const roomData = snapshot.data();
-                        console.log("Data Meja Update dari Lawan:", roomData);
+                        console.log("⚡ Data Meja Ter-update Realtime dari Firebase:", roomData);
                         pot = roomData.pot;
                         updateUI();
                     }
-                }, (error) => console.error("Error Firebase:", error));
+                }, (error) => console.error("Firebase Error Listener:", error));
             } catch (err) {
-                console.error("Gagal membuat online room:", err);
+                console.error("Gagal membuat room online:", err);
             }
         };
     </script>
